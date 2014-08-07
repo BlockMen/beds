@@ -2,7 +2,7 @@ Minetest mod "Beds"
 ===================
 by BlockMen (c) 2014
 
-Version: 1.0 Beta
+Version: 1.0.1 Beta
 
 About
 ~~~~~

@@ -43,8 +43,6 @@ function beds.read_spawns()
 	end
 end
 
---beds.read_spawns()
-
 function beds.save_spawns()
 	writing = true
 	local output = io.open(org_file, "w")
