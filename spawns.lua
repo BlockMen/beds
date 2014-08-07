@@ -1,5 +1,18 @@
-local file = minetest.get_worldpath() .. "/beds_spawns"
-local writing = false
+local world_path = minetest.get_worldpath()
+local org_file = world_path .. "/beds_spawns"
+local file = world_path .. "/beds_spawns"
+local bkwd = false
+local writing = true
+
+-- check for PA's beds mod spawns
+local cf = io.open(world_path .. "/beds_player_spawns", "r")
+if cf ~= nil then
+	io.close(cf)
+	file = world_path .. "/beds_player_spawns"
+	bkwd = true
+end
+writing = false
+
 
 function beds.read_spawns()
 	while writing do
@@ -7,7 +20,7 @@ function beds.read_spawns()
 	end
 	local spawns = beds.spawn
 	local input = io.open(file, "r")
-	if input then
+	if input and not bkwd then
 		repeat
 		local x = input:read("*n")
 		if x == nil then
@@ -19,6 +32,12 @@ function beds.read_spawns()
 		spawns[name:sub(2)] = {x = x, y = y, z = z}
 		until input:read(0) == nil
 		io.close(input)
+	elseif input and bkwd then
+		beds.spawn = minetest.deserialize(input:read("*all"))
+		input:close()
+		beds.save_spawns()
+		os.remove(file)
+		file = org_file
 	else
 		spawns = {}
 	end
@@ -28,7 +47,7 @@ end
 
 function beds.save_spawns()
 	writing = true
-	local output = io.open(file, "w")
+	local output = io.open(org_file, "w")
 	for i, v in pairs(beds.spawn) do
 		output:write(v.x.." "..v.y.." "..v.z.." "..i.."\n")
 	end
