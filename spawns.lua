@@ -36,7 +36,7 @@ function beds.read_spawns()
 		beds.spawn = minetest.deserialize(input:read("*all"))
 		input:close()
 		beds.save_spawns()
-		os.remove(file)
+		os.rename(file, file .. ".backup")
 		file = org_file
 	else
 		spawns = {}
