@@ -4,7 +4,8 @@ local function remove_top(pos)
 	local n = minetest.get_node_or_nil(pos)
 	local dir = minetest.facedir_to_dir(n.param2)
 	local p = {x=pos.x+dir.x,y=pos.y,z=pos.z+dir.z}
-	if minetest.get_item_group(minetest.get_node(p).name, "bed") == 2 then
+	local n2 = minetest.get_node(p)
+	if minetest.get_item_group(n2.name, "bed") == 2 and n.param2 == n2.param2 then
 		minetest.remove_node(p)
 	end
 end
