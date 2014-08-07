@@ -2,6 +2,7 @@
 
 local function remove_top(pos)
 	local n = minetest.get_node_or_nil(pos)
+	if not n then return end
 	local dir = minetest.facedir_to_dir(n.param2)
 	local p = {x=pos.x+dir.x,y=pos.y,z=pos.z+dir.z}
 	local n2 = minetest.get_node(p)
