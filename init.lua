@@ -94,15 +94,20 @@ end
 local function update_formspecs(finished)
 	local ges = #minetest.get_connected_players()
 	local form_n = ""
+	local is_majority = (ges/2) < player_in_bed
 
 	if finished then
 		form_n = form ..
 			"label[2.7,11; Good morning.]"
 	else
 		form_n = form ..
-			"label[2.2,11;"..tostring(player_in_bed).." of "..tostring(ges).." players are in bed]"
+			"label[2.2,11;"..tostring(player_in_bed).." of "..tostring(ges).." players are in bed]"	
+		if is_majority then
+			form_n = form_n ..
+				"button_exit[2,8;4,0.75;force;Force night skip]"
+		end
 	end
-	
+
 	for name,_ in pairs(beds.player) do
 		minetest.show_formspec(name, "beds_form", form_n)
 	end
@@ -192,6 +197,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.quit or fields.leave then
 		lay_down(player, nil, nil, false)
 		update_formspecs(false)
+	end
+
+	if fields.force then
+		beds.skip_night()
+		update_formspecs(true)
+		beds.kick_players()
 	end
 end)
 
