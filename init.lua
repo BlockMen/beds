@@ -3,10 +3,11 @@ beds.player = {}
 beds.pos = {}
 beds.spawn = {}
 
+local is_sp = minetest.is_singleplayer() or false
+local player_in_bed = 0
 local form = 	"size[8,15;true]"..
 		"bgcolor[#080808BB; true]"..
 		"button_exit[2,12;4,0.75;leave;Leave Bed]"
-local player_in_bed = 0
 
 
 -- help functions
@@ -139,13 +140,17 @@ function beds.on_rightclick(pos, player)
 		lay_down(player, nil, nil, false)
 	end
 
-	update_formspecs(false)
+	if not is_sp then
+		update_formspecs(false)
+	end
 
 	-- skip the night and let all stand up
 	if check_in_beds() then
 		minetest.after(2, function()
 			beds.skip_night()
-			update_formspecs(true)
+			if not is_sp then
+				update_formspecs(true)
+			end
 			beds.kick_players()
 		end)
 	end
