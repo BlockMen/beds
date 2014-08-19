@@ -134,6 +134,9 @@ function beds.on_rightclick(pos, player)
 	local tod = minetest.get_timeofday()
 
 	if tod > 0.2 and tod < 0.805 then
+		if beds.player[name] then
+			lay_down(player, nil, nil, false)
+		end
 		minetest.chat_send_player(name, "You can only sleep at night.")
 		return
 	end
