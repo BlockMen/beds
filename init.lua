@@ -42,7 +42,7 @@ local function check_in_beds(players)
 	return true
 end
 
-local function lay_down(player, pos, bed_pos, state)
+local function lay_down(player, pos, bed_pos, state, skip)
 	local name = player:get_player_name()
 	local hud_flags = player:hud_get_flags()
 
@@ -56,6 +56,10 @@ local function lay_down(player, pos, bed_pos, state)
 		if beds.player[name] ~= nil then
 			beds.player[name] = nil
 			player_in_bed = player_in_bed - 1
+		end
+		-- skip here to prevent sending player specific changes (used for leaving players)
+		if skip then
+			return
 		end
 		if p then 
 			player:setpos(p)
@@ -182,7 +186,7 @@ end)
 
 minetest.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
-	lay_down(player, nil, nil, false)
+	lay_down(player, nil, nil, false, true)
 	beds.player[name] = nil
 	if check_in_beds() then
 		minetest.after(2, function()
